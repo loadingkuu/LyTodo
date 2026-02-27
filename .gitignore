@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+storage.json
+storage.json.bak*
+*.bak
+dist/
+build/
+*.spec
