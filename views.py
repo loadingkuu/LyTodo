@@ -83,7 +83,10 @@ class TopEditor(QFrame):
             if event.key() == Qt.Key_Escape:
                 self.cancelled.emit()
                 return True
-            if (event.key() in (Qt.Key_Return, Qt.Key_Enter)) and (event.modifiers() & Qt.ControlModifier):
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                # Enter 直接提交；Shift+Enter 换行
+                if event.modifiers() & Qt.ShiftModifier:
+                    return False
                 self.accepted.emit(self.edit.toPlainText())
                 return True
         return super().eventFilter(obj, event)
@@ -1178,6 +1181,12 @@ class SettingsDialog(QDialog):
         row1.addWidget(self.cb_auto_archive); row1.addStretch(1)
         lay.addLayout(row1)
 
+        row_startup = QHBoxLayout()
+        row_startup.addWidget(QLabel("开机自启动（Windows）："))
+        self.cb_startup = QCheckBox(); self.cb_startup.setChecked(bool(getattr(settings, "launch_at_startup", False)))
+        row_startup.addWidget(self.cb_startup); row_startup.addStretch(1)
+        lay.addLayout(row_startup)
+
         row2 = QHBoxLayout()
         row2.addWidget(QLabel("主界面显示已完成："))
         self.cb_show_completed = QCheckBox()
@@ -1297,6 +1306,7 @@ class SettingsDialog(QDialog):
         return {
             "auto_archive_completed": self.cb_auto_archive.isChecked(),
             "show_completed_in_main": self.cb_show_completed.isChecked(),
+            "launch_at_startup": self.cb_startup.isChecked(),
             "font_family": self.font_box.currentFont().family(),
             "font_size": int(self.spin_font.value()),
             "always_on_top": self.cb_top.isChecked(),

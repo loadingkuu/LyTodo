@@ -22,9 +22,11 @@ from views import (
 )
 from sync_service import SyncService
 from win_hotkey import GlobalHotkey, IS_WINDOWS, WM_HOTKEY, set_topmost
+from startup import set_launch_at_startup
 
 
 CONTROLLER_BUILD = "V1.0"
+APP_STARTUP_NAME = "LyTodo"
 
 
 class AppController:
@@ -110,6 +112,7 @@ class AppController:
         # ---------- hotkey ----------
         self.hotkey = GlobalHotkey(hotkey_id=1)
         self._apply_hotkey()
+        self._apply_startup_setting()
 
         # ---------- sync ----------
         self.storage_path = getattr(self.repo, "path", "storage.json")
@@ -913,6 +916,7 @@ class AppController:
             self.settings.font_size = int(v.get("font_size", 10))
             self.settings.always_on_top = bool(v.get("always_on_top", False))
             self.settings.panel_opacity = int(v.get("panel_opacity", 160))
+            self.settings.launch_at_startup = bool(v.get("launch_at_startup", False))
 
             self.settings.hotkey_enabled = bool(v.get("hotkey_enabled", False))
             self.settings.hotkey_sequence = str(v.get("hotkey_sequence", "Ctrl+Alt+T") or "Ctrl+Alt+T")
@@ -934,6 +938,7 @@ class AppController:
             self.window.update()
 
             self._apply_hotkey()
+            self._apply_startup_setting()
 
             # apply sync
             self.sync = SyncService(self.settings.sync_base_url, self.settings.sync_token, self.settings.sync_user)
@@ -951,6 +956,9 @@ class AppController:
             self._refresh_tagbar()
             self.save()
             self._mark_dirty_and_debounce()
+
+    def _apply_startup_setting(self):
+        set_launch_at_startup(APP_STARTUP_NAME, bool(getattr(self.settings, "launch_at_startup", False)))
 
     # ---------------- sync ----------------
 

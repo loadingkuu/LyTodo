@@ -132,6 +132,7 @@ class Settings:
 
     panel_opacity: int = 160
     always_on_top: bool = False
+    launch_at_startup: bool = False
 
     hotkey_enabled: bool = False
     hotkey_sequence: str = "Ctrl+Alt+T"
@@ -166,7 +167,9 @@ class Settings:
             font_family=str(g("font_family", "") or ""),
             font_size=int(g("font_size", 10)),
             panel_opacity=int(g("panel_opacity", 160)),
-            always_on_top=bool(g("always_on_top", False)),            hotkey_enabled=bool(g("hotkey_enabled", False)),
+            always_on_top=bool(g("always_on_top", False)),
+            launch_at_startup=bool(g("launch_at_startup", False)),
+            hotkey_enabled=bool(g("hotkey_enabled", False)),
             hotkey_sequence=str(g("hotkey_sequence", "Ctrl+Alt+T") or "Ctrl+Alt+T"),
             hotkey_force_top=bool(g("hotkey_force_top", True)),
             win_x=int(g("win_x", 200)),
