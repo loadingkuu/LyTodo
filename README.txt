@@ -1,4 +1,3 @@
-LyTodo v8
 
 运行：
   1) pip install PySide6
